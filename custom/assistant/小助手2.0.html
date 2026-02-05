@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href="style.css">
+      <script src="main.js"></script>
+    <title>倒计时小助手</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        background: #fef6e4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      h1 {
+        margin-top: 40px;
+        color: #ff6b6b;
+        font-size: 2.5em;
+      }
+
+      #currentDate {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      #finalCountdown,
+      #holidayCountdown {
+        font-size: 1em;
+        margin-bottom: 15px;
+      }
+
+      #holidayCountdown {
+        color: #c0392b;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+        margin: 20px 20px 40px;
+      }
+
+      .card {
+        background: #fff3e0;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px 25px;
+        width: 280px;
+        text-align: center;
+        transition: transform 0.3s;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+      }
+
+      .title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #ff9800;
+      }
+
+      .time {
+        font-size: 1.5em;
+        color: #2e7d32;
+        font-weight: bold;
+      }
+
+      .footer {
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #888;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      /* 攻坚日历样式 */
+      #calendarBtn {
+        background: #ff9800;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1em;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      #calendarBtn:hover {
+        background: #fb8c00;
+      }
+
+      /* 模态框样式 */
+      .modal {
+        display: none; /* 默认隐藏 */
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-content {
+        margin: 5% auto;
+        display: block;
+        max-width: 90%;
+        max-height: 80vh;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .modal-content:hover {
+        transform: scale(1.05);
+      }
+
+      .close {
+        position: fixed;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #bbb;
+        text-decoration: none;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .modal-content {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>⏰ 脱O攻坚计时小助手</h1>
+    <div id="currentDate">加载中...</div>
+    <div id="holidayCountdown">加载中...</div>
+    <div id="finalCountdown">加载中...</div>
+    <div class="container">
+      <div class="card">
+        <div class="title">距离中午攻坚结束还有</div>
+        <div class="time" id="noonCountdown">加载中...</div>
+      </div>
+      <div class="card">
+        <div class="title">距离下午攻坚结束还有</div>
+        <div class="time" id="eveCountdown">加载中...</div>
+      </div>
+      <div class="card">
+        <div class="title">距离晚上攻坚结束还有</div>
+        <div class="time" id="midCountdown">加载中...</div>
+      </div>
+    </div>
+    <button id="calendarBtn">📅 查看攻坚日历</button>
+    <div id="calendarModal" class="modal">
+      <span class="close" id="closeBtn">&times;</span>
+      <img
+        class="modal-content"
+        id="calendarImg"
+        src="calendar.png"
+        alt="攻坚日历"
+      />
+    </div>
+    <div class="footer">攻坚克难担使命 主动作为定成败</div>
+
+    <script>
+      // const config = {
+      //   noon: "11:40",
+      //   eve: "17:40",
+      //   mid: eveningTime
+      // };
+      const FINAL_DATE = new Date(2026, 3, 30);
+      const HOLIDAYS = [
+        { name: "春节", date: new Date(2026, 1, 15) }, // 2月15日
+        { name: "清明节", date: new Date(2026, 3, 4) }, // 4月4日
+      ];
+      function calculateRemainingDays() {
+        const now = new Date();
+        const timeDiff = FINAL_DATE.getTime() - now.getTime();
+        const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        const countdownElement = document.getElementById("finalCountdown");
+
+        if (dayDiff > 0) {
+          countdownElement.textContent = `距离攻坚结束（4月30日）还有 ${dayDiff} 天`;
+        } else if (dayDiff === 0) {
+          countdownElement.textContent = "今天就是攻坚结束日！";
+        } else {
+          countdownElement.textContent = "攻坚已结束，感谢您的付出！";
+        }
+      }
+      function updateCurrentDate() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const weekDays = [
+          "星期日",
+          "星期一",
+          "星期二",
+          "星期三",
+          "星期四",
+          "星期五",
+          "星期六",
+        ];
+        const weekDay = weekDays[date.getDay()];
+
+        document.getElementById(
+          "currentDate"
+        ).textContent = `今天是 ${year}年${month}月${day}日 ${weekDay}`;
+      }
+      function parseTime(timeStr) {
+        const [hour, minute] = timeStr.split(":").map(Number);
+        return { hour, minute };
+      }
+
+      function formatTime(diffSeconds) {
+        const hours = Math.floor(diffSeconds / 3600);
+        const minutes = Math.floor((diffSeconds % 3600) / 60);
+        const seconds = Math.floor(diffSeconds % 60);
+        return `${hours}小时${minutes}分钟${seconds}秒`;
+      }
+      function calculateNextHoliday() {
+        const now = new Date();
+        let minDiff = Infinity;
+        let nextHoliday = null;
+
+        // 遍历节日列表
+        HOLIDAYS.forEach((holiday) => {
+          const diff = holiday.date.getTime() - now.getTime();
+
+          // 只考虑未来节日且在攻坚结束前
+          if (diff > 0 && diff < minDiff && holiday.date <= FINAL_DATE) {
+            minDiff = diff;
+            nextHoliday = holiday;
+          }
+        });
+
+        const countdownElement = document.getElementById("holidayCountdown");
+
+        if (nextHoliday) {
+          const days = Math.floor(minDiff / (1000 * 60 * 60 * 24));
+
+          countdownElement.textContent = `最近的假期是 ${
+            nextHoliday.name
+          }（${formatHolidayDate(nextHoliday.date)}）距离放假还有 ${days} 天`;
+        } else {
+          countdownElement.textContent = "攻坚期间已无假期，加油冲刺！";
+        }
+      }
+      function updateCountdowns() {
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        const weekDay = now.getDay(); // 0=周日, 1-4=周一到周四, 5-6=周五周六
+        const isWeekday = weekDay >= 1 && weekDay <= 4;
+        const eveningTime = isWeekday ? "21:00" : "18:00";
+        const config = {
+          noon: "11:40",
+          eve: isWeekday ? "17:40" : "18:00",
+          mid: eveningTime,
+        };
+
+        // 创建目标时间
+        const targets = {
+          noon: new Date(today.setHours(...config.noon.split(":"))),
+          eve: new Date(today.setHours(...config.eve.split(":"))),
+          mid: new Date(today.setHours(...config.mid.split(":"))),
+        };
+
+        const nowTimeStr = now.toTimeString().slice(0, 5);
+
+        for (const key in targets) {
+          const target = targets[key];
+          const elementId = `${key}Countdown`;
+          const diffSeconds = Math.floor((target - now) / 1000);
+
+          if (diffSeconds > 0) {
+            console.log(key, "key");
+            if (!isWeekday && key == "mid") {
+              document.getElementById(elementId).textContent = "今晚不攻坚！";
+            } else {
+              document.getElementById(elementId).textContent =
+                formatTime(diffSeconds);
+            }
+          } else {
+            document.getElementById(elementId).textContent = "已结束！";
+          }
+        }
+      }
+      function formatHolidayDate(date) {
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${month}月${day}日`;
+      }
+      function initCalendar() {
+        const modal = document.getElementById("calendarModal");
+        const btn = document.getElementById("calendarBtn");
+        const span = document.getElementById("closeBtn");
+        const img = document.getElementById("calendarImg");
+
+        // 点击按钮显示模态框
+        btn.addEventListener("click", () => {
+          modal.style.display = "block";
+          // 预加载图片
+          img.onload = () => {
+            modal.style.display = "block";
+          };
+          img.onerror = () => {
+            alert("图片加载失败，请检查网络连接");
+            modal.style.display = "none";
+          };
+        });
+
+        // 点击关闭按钮或外部区域关闭模态框
+        span.addEventListener("click", () => {
+          modal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        });
+      }
+      initCalendar();
+      updateCurrentDate();
+      updateCountdowns();
+      calculateRemainingDays();
+      calculateNextHoliday();
+      setInterval(updateCountdowns, 1000);
+    </script>
+  </body>
+</html>
