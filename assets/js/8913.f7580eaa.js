@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkmy_web=globalThis.webpackChunkmy_web||[]).push([[8913],{8913(b,e,h){h.r(e)}}]);
