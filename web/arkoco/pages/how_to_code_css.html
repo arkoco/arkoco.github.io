@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>如何写出优雅的 CSS - Arkoco</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<article>
+    <header>
+        <a href="../index.html" style="font-size: 0.8em; color: #888;">← 返回首页</a>
+        <h1 style="margin-top: 20px;">如何写出优雅的 CSS</h1>
+        <p style="color: #999; font-size: 0.8em;">发布于 2026年2月4日 · 编程笔记</p>
+    </header>
+
+    <div class="content fade">
+        <p>在前端开发中，编写可维护的 CSS 是一门艺术。我们不仅要追求视觉上的完美，更要追求代码结构的清晰。</p>
+
+        <h2>1. 善用变量</h2>
+        <p>通过定义 CSS 变量，可以轻松实现主题切换和统一色调。</p>
+        
+        <pre><code>:root {
+  --primary-color: #f0e6f4;
+  --text-main: #333;
+}
+
+body {
+  color: var(--text-main);
+}</code></pre>
+
+        <h2>2. 视觉层级</h2>
+        <p>轻量的背景色能为页面增加质感，如下面的插图所示：</p>
+
+        <div class="post-img">
+            <img src="../img/imgs.jpg" alt="设计布局示例">
+            <span>图 1：使用淡紫色调构建的视觉层级</span>
+        </div>
+
+        <blockquote>
+            “Less is more. 简约而不简单是我们的终极目标。”
+        </blockquote>
+
+        <p>希望这篇文章能给你带来一些关于 CSS 设计的灵感。如果有任何问题，欢迎通过邮箱联系我。</p>
+    </div>
+</article>
+
+<footer>
+    <p>&copy; 2026 Arkoco | 豫ICP备2026004114号</p>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
