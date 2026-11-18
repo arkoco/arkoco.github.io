@@ -1,0 +1,130 @@
+/* ============================================================
+   giscus 评论主题：编辑杂志 · 浅色
+   ------------------------------------------------------------
+   这个文件不参与 Docusaurus 构建，是给 giscus iframe 用的样式表：
+   src/components/Giscus 把它的线上地址作为 theme 参数传进去，
+   giscus 会在自己的 iframe 里 <link> 它。
+
+   因为 iframe 是跨域的，父页面的 CSS 进不来 —— 评论区能改的只有
+   这 84 个 GitHub Primer 色板变量和下面这些选择器。
+
+   注意选择器带 .w-full：giscus 应用层的样式是在我们这条 <link> 之后
+   注入的，只写 main 会被同优先级但更靠后的规则覆盖（实测过，颜色不变）。
+   根节点就是 <main class="w-full mx-auto">，加一个类名即可稳定压过它。
+
+   颜色值必须和 src/css/custom.css 里的 --ed-* 保持同步。
+   ============================================================ */
+
+/* 内置主体：只借用它的 84 个变量，颜色在下面全部覆盖 */
+@import url('https://giscus.app/themes/noborder_light.css');
+
+main.w-full {
+  /* giscus 用 RGB 三元组做透明度运算，改这两项就能整体换色 */
+  --primary-default: 166, 61, 114; /* --ed-accent #a63d72 */
+  --bg-default: 251, 250, 248; /* --ed-bg #fbfaf8 */
+
+  --color-canvas-default: #fbfaf8;
+  --color-canvas-overlay: #fbfaf8;
+  --color-canvas-inset: #f6f3ee;
+  --color-canvas-subtle: #f6f3ee;
+
+  --color-fg-default: #17161a;
+  --color-fg-muted: #6f6a75;
+  --color-fg-subtle: #a09aa5;
+
+  --color-border-default: #e3ded7;
+  --color-border-muted: #e3ded7;
+  --color-neutral-muted: #efeae3;
+  --color-scale-gray-1: #efeae3;
+  --color-action-list-item-default-hover-bg: #efeae3;
+
+  --color-btn-text: #17161a;
+  --color-btn-bg: #fbfaf8;
+  --color-btn-border: #e3ded7;
+  --color-btn-hover-bg: #f6f3ee;
+  --color-btn-hover-border: #d5cfc7;
+  --color-btn-active-bg: rgba(166, 61, 114, 0.12);
+  --color-btn-active-border: #a63d72;
+  --color-btn-selected-bg: rgba(166, 61, 114, 0.1);
+
+  --color-segmented-control-bg: #f6f3ee;
+  --color-segmented-control-button-bg: #fbfaf8;
+  --color-social-reaction-bg-hover: #efeae3;
+  --color-social-reaction-bg-reacted-hover: rgba(166, 61, 114, 0.12);
+
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 直角：与全站编辑杂志版式一致；头像（img）刻意不动，保持圆形 */
+main.w-full button,
+main.w-full input,
+main.w-full textarea,
+main.w-full form,
+main.w-full .gsc-comment-box-tabs,
+main.w-full .gsc-comments,
+main.w-full .gsc-comment,
+main.w-full .gsc-reply-box,
+main.w-full .gsc-reactions-popover,
+main.w-full .gsc-reactions-button,
+main.w-full .gsc-social-reaction-summary-item {
+  border-radius: 0;
+}
+
+/* 栏目小标题走衬线，和文档正文的 h2 语言一致 */
+main.w-full h4 {
+  font-family: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia,
+    serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* 输入框：纸面底 + 品红聚焦，不要 GitHub 的输入框蓝 */
+main.w-full .gsc-comment-box {
+  border: 1px solid #e3ded7;
+  background: #fbfaf8;
+}
+
+main.w-full .gsc-comment-box-tabs {
+  background: transparent;
+  border-bottom: 1px solid #e3ded7;
+}
+
+main.w-full .gsc-comment-box-textarea,
+main.w-full .form-control {
+  background: #f6f3ee;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+main.w-full .gsc-comment-box-textarea:focus,
+main.w-full .form-control:focus {
+  background: #fbfaf8;
+  border-color: #a63d72;
+  box-shadow: inset 0 0 0 1px #a63d72;
+  outline: none;
+}
+
+/* 表情按钮的默认底色太跳，压回纸面 */
+main.w-full .gsc-emoji-button {
+  background: transparent;
+  border-color: transparent;
+}
+
+main.w-full .gsc-emoji-button:hover {
+  background: #efeae3;
+  border-color: #e3ded7;
+}
+
+/* 登录按钮：giscus 用 disabled 那句令牌给它上色（0.45 alpha），
+   压到纸面上会糊。只认带 href 的 <a>，不碰真正会 disabled 的提交按钮。 */
+main.w-full .btn-primary[href] {
+  background: #a63d72;
+  border-color: #a63d72;
+  color: #fff;
+}
+
+main.w-full .btn-primary[href]:hover {
+  background: #8c2f60;
+  border-color: #8c2f60;
+}

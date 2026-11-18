@@ -1,0 +1,126 @@
+/* ============================================================
+   giscus 评论主题：编辑杂志 · 深色
+   ------------------------------------------------------------
+   与 theme-light.css 一一对应，只是色板换成 [data-theme='dark'] 的
+   --ed-* 值。改配色时两个文件要一起改。
+
+   选择器带 .w-full 的原因见 theme-light.css 顶部注释（giscus 应用层
+   样式注入得更晚，需要用特异性压过去）。
+
+   颜色值必须和 src/css/custom.css 里的 --ed-* 保持同步。
+   ============================================================ */
+
+@import url('https://giscus.app/themes/noborder_dark.css');
+
+main.w-full {
+  /* 填充色（按钮底）沿用深品红：深色站里浅粉底 + 白字对比太低。
+     链接/强调文字另外用浅粉覆盖，见下面的 --color-accent-*。 */
+  --primary-default: 166, 61, 114;
+  --bg-default: 19, 18, 21; /* --ed-bg #131215 */
+
+  --color-accent-fg: #e58cb6;
+  --color-accent-emphasis: #e58cb6;
+  --color-accent-muted: rgba(229, 140, 182, 0.4);
+  --color-accent-subtle: rgba(229, 140, 182, 0.12);
+
+  --color-canvas-default: #131215;
+  --color-canvas-overlay: #1a191e;
+  --color-canvas-inset: #1a191e;
+  --color-canvas-subtle: #1a191e;
+
+  --color-fg-default: #f1ede8;
+  --color-fg-muted: #968f99;
+  --color-fg-subtle: #6b6672;
+
+  --color-border-default: #2c2a2f;
+  --color-border-muted: #232126;
+  --color-neutral-muted: #232126;
+  --color-scale-gray-1: #232126;
+  --color-action-list-item-default-hover-bg: #232126;
+
+  --color-btn-text: #f1ede8;
+  --color-btn-bg: #131215;
+  --color-btn-border: #2c2a2f;
+  --color-btn-hover-bg: #1a191e;
+  --color-btn-hover-border: #3a373f;
+  --color-btn-active-bg: rgba(229, 140, 182, 0.16);
+  --color-btn-active-border: #e58cb6;
+  --color-btn-selected-bg: rgba(229, 140, 182, 0.12);
+
+  --color-segmented-control-bg: #1a191e;
+  --color-segmented-control-button-bg: #131215;
+  --color-social-reaction-bg-hover: #232126;
+  --color-social-reaction-bg-reacted-hover: rgba(229, 140, 182, 0.16);
+
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+main.w-full button,
+main.w-full input,
+main.w-full textarea,
+main.w-full form,
+main.w-full .gsc-comment-box-tabs,
+main.w-full .gsc-comments,
+main.w-full .gsc-comment,
+main.w-full .gsc-reply-box,
+main.w-full .gsc-reactions-popover,
+main.w-full .gsc-reactions-button,
+main.w-full .gsc-social-reaction-summary-item {
+  border-radius: 0;
+}
+
+main.w-full h4 {
+  font-family: 'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', Georgia,
+    serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+main.w-full .gsc-comment-box {
+  border: 1px solid #2c2a2f;
+  background: #131215;
+}
+
+main.w-full .gsc-comment-box-tabs {
+  background: transparent;
+  border-bottom: 1px solid #2c2a2f;
+}
+
+main.w-full .gsc-comment-box-textarea,
+main.w-full .form-control {
+  background: #1a191e;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+main.w-full .gsc-comment-box-textarea:focus,
+main.w-full .form-control:focus {
+  background: #131215;
+  border-color: #e58cb6;
+  box-shadow: inset 0 0 0 1px #e58cb6;
+  outline: none;
+}
+
+main.w-full .gsc-emoji-button {
+  background: transparent;
+  border-color: transparent;
+}
+
+main.w-full .gsc-emoji-button:hover {
+  background: #232126;
+  border-color: #2c2a2f;
+}
+
+/* 登录按钮：giscus 用 disabled 那句令牌给它上色（0.45 alpha），
+   深色下会糊成灰粉色。只认带 href 的 <a>，不碰真会 disabled 的提交按钮。 */
+main.w-full .btn-primary[href] {
+  background: #a63d72;
+  border-color: #a63d72;
+  color: #fff;
+}
+
+main.w-full .btn-primary[href]:hover {
+  background: #b8497f;
+  border-color: #b8497f;
+}
